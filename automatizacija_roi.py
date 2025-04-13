@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 from io import BytesIO
 
 # Puslapio nustatymai
-st.set_page_config(page_title="Automatizacijos naudos skaičiuoklė", page_icon="🚀", layout="centered")
+st.set_page_config(page_title="Automatizacijos naudos skaičiuoklė", page_icon="", layout="centered")
 
 st.title("Sužinokite, kiek laiko ir pinigų galite sutaupyti automatizavę savo verslo procesus!")
 
@@ -38,10 +38,22 @@ working_days_per_month = st.number_input("Kiek darbo dienų yra per mėnesį?", 
 
 investment = st.number_input("Investicijos suma į automatizaciją (€)", min_value=0.0, value=0.0)
 
-# Pasirinkimas laikotarpiui
-st.header("Pasirinkite ROI vertinimo laikotarpį:")
+# ROI pasirinkimas su paaiškinimu
+st.header("Investicijų grąžos (ROI) skaičiavimas")
+
+st.markdown("""
+**Kas yra ROI?**  
+ROI (Return on Investment) – tai investicijų grąžos rodiklis, kuris parodo, kiek investuotos lėšos atsiperka kaip sutaupyti pinigai per pasirinktą laikotarpį.
+
+**Kaip pasirinkti laikotarpį?**  
+Pasirinkite, per kiek metų norite matyti bendrą sutaupytą sumą ir grąžą:
+- **1 metai** – matysite greitą efektą.
+- **3 metai** – matysite vidutinės trukmės efektą.
+- **5 metai** – matysite ilgalaikį efektą.
+""")
+
 roi_period_years = st.selectbox(
-    "Pasirinkite laikotarpį:",
+    "Pasirinkite laikotarpį ROI skaičiavimui:",
     (1, 3, 5),
     index=0
 )
@@ -58,7 +70,7 @@ total_value_saved_all_years = total_value_saved_per_year * roi_period_years
 if investment > 0:
     roi = ((total_value_saved_all_years - investment) / investment) * 100
 else:
-    roi = 1000  # Jei investicijos nėra, laikome labai aukštu
+    roi = 1000  # jei nėra investicijos, laikom labai dideliu ROI
 
 # Rezultatų rodymas
 st.header("Rezultatai:")
@@ -75,9 +87,9 @@ else:
 
 # Dinaminė žinutė pagal ROI ir laikotarpį
 if roi >= 0:
-    st.success(f"🎯 Puiku! Jūsų automatizacijos projektas per {roi_period_years} metus gali reikšmingai prisidėti prie išlaidų mažinimo ir verslo stiprinimo! 🚀")
+    st.success(f" Puiku! Jūsų automatizacijos projektas per {roi_period_years} metus gali reikšmingai prisidėti prie išlaidų mažinimo ir verslo stiprinimo! 🚀")
 else:
-    st.warning(f"⚡️ Dėmesio: Per {roi_period_years} metus automatizacijos nauda nepadengia investicijų. Rekomenduojame peržiūrėti įvestus duomenis arba apsvarstyti papildomas optimizacijos galimybes.")
+    st.warning(f" Dėmesio: Per {roi_period_years} metus automatizacijos nauda nepadengia investicijų. Rekomenduojame peržiūrėti įvestus duomenis arba apsvarstyti papildomas optimizacijos galimybes.")
 
 # Investicijos grąžos išskaidymas
 if investment > 0:
@@ -152,7 +164,7 @@ st.markdown(
     <div style="text-align: center; margin-top: 2rem;">
         <a href="https://sigitasprendimai.lt/kontaktai-susisiekti/" target="_blank" rel="noopener">
             <button style="padding: 0.75em 1.5em; font-size: 1.2em; background-color: #28a745; color: white; border: none; border-radius: 10px; cursor: pointer;">
-                🚀 Susisiekti dabar
+                 Susisiekti dabar
             </button>
         </a>
     </div>
