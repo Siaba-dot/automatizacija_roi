@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 from io import BytesIO
 
 # Puslapio nustatymai
-st.set_page_config(page_title="Automatizacijos naudos skaičiuoklė", page_icon="🚀", layout="centered")
+st.set_page_config(page_title="Automatizacijos naudos skaičiuoklė", page_icon="", layout="centered")
 
 st.title("Sužinokite, kiek laiko ir pinigų galite sutaupyti automatizavę savo verslo procesus!")
 
@@ -75,9 +75,9 @@ else:
 
 # Dinaminė žinutė pagal ROI ir laikotarpį
 if roi >= 0:
-    st.success(f"🎯 Puiku! Jūsų automatizacijos projektas per {roi_period_years} metus gali reikšmingai prisidėti prie išlaidų mažinimo ir verslo stiprinimo! 🚀")
+    st.success(f"Puiku! Jūsų automatizacijos projektas per {roi_period_years} metus gali reikšmingai prisidėti prie išlaidų mažinimo ir verslo stiprinimo! 🚀")
 else:
-    st.warning(f"⚡️ Dėmesio: Per {roi_period_years} metus automatizacijos nauda nepadengia investicijų. Rekomenduojame peržiūrėti įvestus duomenis arba apsvarstyti papildomas optimizacijos galimybes.")
+    st.warning(f"Dėmesio: Per {roi_period_years} metus automatizacijos nauda nepadengia investicijų. Rekomenduojame peržiūrėti įvestus duomenis arba apsvarstyti papildomas optimizacijos galimybes.")
 
 # Atsisiųsti Excel
 st.header("Atsisiųskite savo skaičiavimą:")
@@ -142,7 +142,7 @@ st.markdown(
     <div style="text-align: center; margin-top: 2rem;">
         <a href="https://sigitasprendimai.lt/kontaktai-susisiekti/" target="_blank">
             <button style="padding: 0.75em 1.5em; font-size: 1.2em; background-color: #28a745; color: white; border: none; border-radius: 10px; cursor: pointer;">
-                🚀 Susisiekti dabar
+              Susisiekti dabar
             </button>
         </a>
     </div>
