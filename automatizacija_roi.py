@@ -46,7 +46,7 @@ st.markdown("""
 ROI (Return on Investment) – tai investicijų grąžos rodiklis, kuris parodo, kiek investuotos lėšos atsiperka kaip sutaupyti pinigai per pasirinktą laikotarpį.
 
 **Kaip pasirinkti laikotarpį?**  
-Pasirinkite, per kiek metų norite matyti bendrą sutaupytą sumą ir grąžą:
+Pasirinkite, per kiek metų norite apskaičiuoti bendrą sutaupytą sumą ir grąžą:
 - **1 metai** – matysite greitą efektą.
 - **3 metai** – matysite vidutinės trukmės efektą.
 - **5 metai** – matysite ilgalaikį efektą.
@@ -101,13 +101,35 @@ if investment > 0:
     st.latex(rf"ROI = \frac{{{total_value_saved_all_years:.2f} - {investment:.2f}}}{{{investment:.2f}}} \times 100\%")
     st.write(f"**Galutinis ROI rezultatas:** {roi:.2f}%")
 
-# Atsisiųsti Excel
+# Atsisiųsti Excel su grafiku
 st.header("Atsisiųskite savo skaičiavimą:")
 
 def convert_df_to_excel(df):
     output = BytesIO()
     with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
         df.to_excel(writer, index=False, sheet_name='Skaičiavimai')
+
+        workbook = writer.book
+        worksheet = writer.sheets['Skaičiavimai']
+
+        # Sukuriame grafiką
+        chart = workbook.add_chart({'type': 'column'})
+
+        # Priskiriame duomenis grafikui
+        chart.add_series({
+            'name': 'Reikšmė',
+            'categories': ['Skaičiavimai', 1, 0, len(df) - 1, 0],
+            'values': ['Skaičiavimai', 1, 1, len(df) - 1, 1],
+        })
+
+        # Grafiko pavadinimas ir ašys
+        chart.set_title({'name': 'Automatizacijos naudos analizė'})
+        chart.set_x_axis({'name': 'Rodiklis'})
+        chart.set_y_axis({'name': 'Reikšmė'})
+
+        # Įdedame grafiką į lapą
+        worksheet.insert_chart('D10', chart)
+
     processed_data = output.getvalue()
     return processed_data
 
@@ -137,13 +159,13 @@ df = pd.DataFrame(data)
 excel_data = convert_df_to_excel(df)
 
 st.download_button(
-    label="📥 Atsisiųsti Excel failą",
+    label="📥 Atsisiųsti Excel failą su grafiku",
     data=excel_data,
     file_name="automatizacijos_skaiciavimas.xlsx",
     mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
 )
 
-# Stulpelinis grafikas
+# Stulpelinis grafikas Streamlit lange
 st.header("Sutaupytų pinigų augimas per metus:")
 
 months = [f"{i} mėn." for i in range(1, 13)]
@@ -171,3 +193,4 @@ st.markdown(
     """,
     unsafe_allow_html=True
 )
+
