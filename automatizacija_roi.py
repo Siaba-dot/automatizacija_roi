@@ -75,7 +75,7 @@ else:
 
 # Dinaminė žinutė pagal ROI ir laikotarpį
 if roi >= 0:
-    st.success(f"Puiku! Jūsų automatizacijos projektas per {roi_period_years} metus gali reikšmingai prisidėti prie išlaidų mažinimo ir verslo stiprinimo! 🚀")
+    st.success(f"Puiku! Jūsų automatizacijos projektas per {roi_period_years} metus gali reikšmingai prisidėti prie išlaidų mažinimo ir verslo stiprinimo!")
 else:
     st.warning(f"Dėmesio: Per {roi_period_years} metus automatizacijos nauda nepadengia investicijų. Rekomenduojame peržiūrėti įvestus duomenis arba apsvarstyti papildomas optimizacijos galimybes.")
 
