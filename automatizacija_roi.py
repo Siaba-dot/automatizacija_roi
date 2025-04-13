@@ -1,13 +1,16 @@
 import streamlit as st
 import pandas as pd
+import matplotlib.pyplot as plt
 from io import BytesIO
 
+# Puslapio nustatymai
 st.set_page_config(page_title="Automatizacijos naudos skaičiuoklė", page_icon="", layout="centered")
 
 st.title("Sužinokite, kiek laiko ir pinigų galite sutaupyti automatizavę savo verslo procesus!")
 
 st.header("Įveskite duomenis:")
 
+# Įvesties laukai
 num_employees = st.number_input("Kiek darbuotojų naudosis automatizacija?", min_value=1, value=1)
 
 days_saved_per_employee = []
@@ -15,8 +18,19 @@ hourly_rates = []
 
 for i in range(num_employees):
     with st.expander(f"Darbuotojas {i+1}"):
-        days_saved = st.number_input(f"Kiek darbo dienų per mėnesį taupo automatizacija? (1 darbo diena = 8 valandos)", min_value=0.0, step=0.5, key=f"days_saved_{i}")
-        hourly_rate = st.number_input(f"Darbuotojo {i+1} valandinis atlyginimas (€)", min_value=0.0, value=7.0, step=0.5, key=f"hourly_rate_{i}")
+        days_saved = st.number_input(
+            f"Kiek darbo dienų per mėnesį taupo automatizacija? (1 darbo diena = 8 valandos)",
+            min_value=0.0,
+            step=0.5,
+            key=f"days_saved_{i}"
+        )
+        hourly_rate = st.number_input(
+            f"Darbuotojo {i+1} valandinis atlyginimas (€)",
+            min_value=0.0,
+            value=7.0,
+            step=0.5,
+            key=f"hourly_rate_{i}"
+        )
         days_saved_per_employee.append(days_saved)
         hourly_rates.append(hourly_rate)
 
@@ -37,8 +51,9 @@ total_value_saved_5_years = total_value_saved_per_year * 5
 if investment > 0:
     roi = ((total_value_saved_per_year - investment) / investment) * 100
 else:
-    roi = 1000  # Jei investicija 0, ROI tiesiog didelis, bet perteikiam kitais žodžiais
+    roi = 1000  # Jei investicijos nėra, ROI laikome labai aukštu
 
+# Rezultatų rodymas
 st.header("Rezultatai:")
 
 st.write(f"**Bendras sutaupytų darbo dienų skaičius per mėnesį:** {total_days_saved_per_month:.2f} dienos")
@@ -52,13 +67,13 @@ if investment > 0:
 else:
     st.info("Investicijos suma nenurodyta. Visi sutaupyti pinigai – grynasis pelnas!")
 
-# Dinaminė žinutė
+# Dinaminė žinutė pagal ROI
 if roi >= 0:
     st.success("Sveikiname! Jūsų automatizacijos projektas gali reikšmingai prisidėti prie išlaidų mažinimo ir verslo stiprinimo!")
 else:
     st.warning("Dėmesio: Šiuo atveju automatizacijos nauda nepadengia investicijų. Siūlome dar kartą peržiūrėti įvestus duomenis arba įvertinti papildomas optimizacijos galimybes.")
 
-# Excel failo paruošimas
+# Atsisiųsti Excel
 st.header("Atsisiųskite savo skaičiavimą:")
 
 def convert_df_to_excel(df):
@@ -102,13 +117,28 @@ st.download_button(
     mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
 )
 
-# Call to Action
+# Stulpelinis grafikas
+st.header("Sutaupytų pinigų augimas per metus:")
+
+months = [f"{i} mėn." for i in range(1, 13)]
+monthly_growth = [total_value_saved_per_year * (i / 12) for i in range(1, 13)]
+
+fig, ax = plt.subplots()
+ax.bar(months, monthly_growth)
+ax.set_title("Automatizacijos naudos augimas per metus")
+ax.set_xlabel("Mėnuo")
+ax.set_ylabel("Sutaupyta suma (€)")
+plt.xticks(rotation=45)
+
+st.pyplot(fig)
+
+# Call to Action mygtukas
 st.markdown(
     """
     <div style="text-align: center; margin-top: 2rem;">
         <a href="https://sigitasprendimai.lt/kontaktai-susisiekti/" target="_blank">
             <button style="padding: 0.75em 1.5em; font-size: 1.2em; background-color: #28a745; color: white; border: none; border-radius: 10px; cursor: pointer;">
-                Susisiekti dabar
+                 Susisiekti dabar
             </button>
         </a>
     </div>
