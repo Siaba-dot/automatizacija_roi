@@ -65,6 +65,8 @@ total_value_saved_per_month = sum([(days * 8) * rate for days, rate in zip(days_
 
 total_hours_saved_per_year = total_hours_saved_per_month * 12
 total_value_saved_per_year = total_value_saved_per_month * 12
+total_value_saved_3_years = total_value_saved_per_year * 3
+total_value_saved_5_years = total_value_saved_per_year * 5
 total_value_saved_all_years = total_value_saved_per_year * roi_period_years
 
 if investment > 0:
@@ -78,7 +80,8 @@ st.header("Rezultatai:")
 st.write(f"**Bendras sutaupytų darbo dienų skaičius per mėnesį:** {total_days_saved_per_month:.2f} dienos")
 st.write(f"**Per mėnesį sutaupoma:** {total_hours_saved_per_month:.2f} valandos / {total_value_saved_per_month:.2f} €")
 st.write(f"**Per metus sutaupoma:** {total_hours_saved_per_year:.2f} valandos / {total_value_saved_per_year:.2f} €")
-st.write(f"**Per {roi_period_years} metus sutaupoma:** {total_value_saved_all_years:.2f} €")
+st.write(f"**Per 3 metus sutaupoma:** {total_value_saved_3_years:.2f} €")
+st.write(f"**Per 5 metus sutaupoma:** {total_value_saved_5_years:.2f} €")
 
 if investment > 0:
     st.write(f"**Investicijos grąža (ROI) per {roi_period_years} metus:** {roi:.2f}%")
@@ -91,22 +94,27 @@ if roi >= 0:
 else:
     st.warning(f" Dėmesio: Per {roi_period_years} metus automatizacijos nauda nepadengia investicijų. Rekomenduojame peržiūrėti įvestus duomenis arba apsvarstyti papildomas optimizacijos galimybes.")
 
-# Investicijos grąžos išskaidymas
-if investment > 0:
-    st.markdown("---")
-    st.subheader("Investicijos grąžos (ROI) skaičiavimo detalės:")
-
-    st.write(f"**Bendra sutaupyta suma per {roi_period_years} metus:** {total_value_saved_all_years:.2f} €")
-    st.write(f"**Investuota suma į automatizaciją:** {investment:.2f} €")
-    st.latex(rf"ROI = \frac{{{total_value_saved_all_years:.2f} - {investment:.2f}}}{{{investment:.2f}}} \times 100\%")
-    st.write(f"**Galutinis ROI rezultatas:** {roi:.2f}%")
-
-# Atsisiųsti Excel su grafiku
+# Atsisiųsti Excel su GRAŽIU grafiku
 st.header("Atsisiųskite savo skaičiavimą:")
 
-def convert_df_to_excel(df):
+def convert_df_to_excel():
     output = BytesIO()
     with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
+        df = pd.DataFrame({
+            'Rodiklis': [
+                "Per mėnesį sutaupoma (€)",
+                "Per metus sutaupoma (€)",
+                "Per 3 metus sutaupoma (€)",
+                "Per 5 metus sutaupoma (€)"
+            ],
+            'Reikšmė': [
+                total_value_saved_per_month,
+                total_value_saved_per_year,
+                total_value_saved_3_years,
+                total_value_saved_5_years
+            ]
+        })
+
         df.to_excel(writer, index=False, sheet_name='Skaičiavimai')
 
         workbook = writer.book
@@ -117,46 +125,21 @@ def convert_df_to_excel(df):
 
         # Priskiriame duomenis grafikui
         chart.add_series({
-            'name': 'Reikšmė',
-            'categories': ['Skaičiavimai', 1, 0, len(df) - 1, 0],
-            'values': ['Skaičiavimai', 1, 1, len(df) - 1, 1],
+            'name': 'Sutaupytos sumos',
+            'categories': ['Skaičiavimai', 1, 0, 4, 0],
+            'values': ['Skaičiavimai', 1, 1, 4, 1],
+            'fill': {'color': '#1f77b4'}
         })
 
-        # Grafiko pavadinimas ir ašys
-        chart.set_title({'name': 'Automatizacijos naudos analizė'})
-        chart.set_x_axis({'name': 'Rodiklis'})
-        chart.set_y_axis({'name': 'Reikšmė'})
+        chart.set_title({'name': 'Sutaupytos sumos analizė'})
+        chart.set_x_axis({'name': 'Laikotarpis'})
+        chart.set_y_axis({'name': 'Suma (€)', 'min': 0})
 
-        # Įdedame grafiką į lapą
-        worksheet.insert_chart('D10', chart)
+        worksheet.insert_chart('D2', chart)
 
-    processed_data = output.getvalue()
-    return processed_data
+    return output.getvalue()
 
-data = {
-    "Rodiklis": [
-        "Bendras sutaupytų darbo dienų skaičius per mėnesį",
-        "Per mėnesį sutaupoma (valandos)",
-        "Per mėnesį sutaupoma (€)",
-        "Per metus sutaupoma (valandos)",
-        "Per metus sutaupoma (€)",
-        f"Per {roi_period_years} metus sutaupoma (€)",
-        f"ROI per {roi_period_years} metus"
-    ],
-    "Reikšmė": [
-        f"{total_days_saved_per_month:.2f}",
-        f"{total_hours_saved_per_month:.2f}",
-        f"{total_value_saved_per_month:.2f}",
-        f"{total_hours_saved_per_year:.2f}",
-        f"{total_value_saved_per_year:.2f}",
-        f"{total_value_saved_all_years:.2f}",
-        f"{roi:.2f}%" if investment > 0 else "Nenurodyta"
-    ]
-}
-
-df = pd.DataFrame(data)
-
-excel_data = convert_df_to_excel(df)
+excel_data = convert_df_to_excel()
 
 st.download_button(
     label="📥 Atsisiųsti Excel failą su grafiku",
@@ -165,7 +148,7 @@ st.download_button(
     mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
 )
 
-# Stulpelinis grafikas Streamlit lange
+# Streamlit grafikas
 st.header("Sutaupytų pinigų augimas per metus:")
 
 months = [f"{i} mėn." for i in range(1, 13)]
@@ -194,3 +177,8 @@ st.markdown(
     unsafe_allow_html=True
 )
 
+
+
+
+
+    
