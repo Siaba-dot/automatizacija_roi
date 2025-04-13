@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 from io import BytesIO
 
 # Puslapio nustatymai
-st.set_page_config(page_title="Automatizacijos naudos skaičiuoklė", page_icon="", layout="centered")
+st.set_page_config(page_title="Automatizacijos naudos skaičiuoklė", page_icon="🚀", layout="centered")
 
 st.title("Sužinokite, kiek laiko ir pinigų galite sutaupyti automatizavę savo verslo procesus!")
 
@@ -38,6 +38,14 @@ working_days_per_month = st.number_input("Kiek darbo dienų yra per mėnesį?", 
 
 investment = st.number_input("Investicijos suma į automatizaciją (€)", min_value=0.0, value=0.0)
 
+# Pasirinkimas laikotarpiui
+st.header("Pasirinkite ROI vertinimo laikotarpį:")
+roi_period_years = st.selectbox(
+    "Pasirinkite laikotarpį:",
+    (1, 3, 5),
+    index=0
+)
+
 # Skaičiavimai
 total_days_saved_per_month = sum(days_saved_per_employee)
 total_hours_saved_per_month = total_days_saved_per_month * 8
@@ -45,13 +53,12 @@ total_value_saved_per_month = sum([(days * 8) * rate for days, rate in zip(days_
 
 total_hours_saved_per_year = total_hours_saved_per_month * 12
 total_value_saved_per_year = total_value_saved_per_month * 12
-total_value_saved_3_years = total_value_saved_per_year * 3
-total_value_saved_5_years = total_value_saved_per_year * 5
+total_value_saved_all_years = total_value_saved_per_year * roi_period_years
 
 if investment > 0:
-    roi = ((total_value_saved_per_year - investment) / investment) * 100
+    roi = ((total_value_saved_all_years - investment) / investment) * 100
 else:
-    roi = 1000  # Jei investicijos nėra, ROI laikome labai aukštu
+    roi = 1000  # Jei investicijos nėra, laikome labai aukštu
 
 # Rezultatų rodymas
 st.header("Rezultatai:")
@@ -59,19 +66,18 @@ st.header("Rezultatai:")
 st.write(f"**Bendras sutaupytų darbo dienų skaičius per mėnesį:** {total_days_saved_per_month:.2f} dienos")
 st.write(f"**Per mėnesį sutaupoma:** {total_hours_saved_per_month:.2f} valandos / {total_value_saved_per_month:.2f} €")
 st.write(f"**Per metus sutaupoma:** {total_hours_saved_per_year:.2f} valandos / {total_value_saved_per_year:.2f} €")
-st.write(f"**Per 3 metus sutaupoma:** {total_value_saved_3_years:.2f} €")
-st.write(f"**Per 5 metus sutaupoma:** {total_value_saved_5_years:.2f} €")
+st.write(f"**Per {roi_period_years} metus sutaupoma:** {total_value_saved_all_years:.2f} €")
 
 if investment > 0:
-    st.write(f"**Investicijos grąža (ROI):** {roi:.2f}% per pirmus metus")
+    st.write(f"**Investicijos grąža (ROI) per {roi_period_years} metus:** {roi:.2f}%")
 else:
     st.info("Investicijos suma nenurodyta. Visi sutaupyti pinigai – grynasis pelnas!")
 
-# Dinaminė žinutė pagal ROI
+# Dinaminė žinutė pagal ROI ir laikotarpį
 if roi >= 0:
-    st.success("Sveikiname! Jūsų automatizacijos projektas gali reikšmingai prisidėti prie išlaidų mažinimo ir verslo stiprinimo!")
+    st.success(f"🎯 Puiku! Jūsų automatizacijos projektas per {roi_period_years} metus gali reikšmingai prisidėti prie išlaidų mažinimo ir verslo stiprinimo! 🚀")
 else:
-    st.warning("Dėmesio: Šiuo atveju automatizacijos nauda nepadengia investicijų. Siūlome dar kartą peržiūrėti įvestus duomenis arba įvertinti papildomas optimizacijos galimybes.")
+    st.warning(f"⚡️ Dėmesio: Per {roi_period_years} metus automatizacijos nauda nepadengia investicijų. Rekomenduojame peržiūrėti įvestus duomenis arba apsvarstyti papildomas optimizacijos galimybes.")
 
 # Atsisiųsti Excel
 st.header("Atsisiųskite savo skaičiavimą:")
@@ -90,9 +96,8 @@ data = {
         "Per mėnesį sutaupoma (€)",
         "Per metus sutaupoma (valandos)",
         "Per metus sutaupoma (€)",
-        "Per 3 metus sutaupoma (€)",
-        "Per 5 metus sutaupoma (€)",
-        "Investicijos grąža (ROI)"
+        f"Per {roi_period_years} metus sutaupoma (€)",
+        f"ROI per {roi_period_years} metus"
     ],
     "Reikšmė": [
         f"{total_days_saved_per_month:.2f}",
@@ -100,8 +105,7 @@ data = {
         f"{total_value_saved_per_month:.2f}",
         f"{total_hours_saved_per_year:.2f}",
         f"{total_value_saved_per_year:.2f}",
-        f"{total_value_saved_3_years:.2f}",
-        f"{total_value_saved_5_years:.2f}",
+        f"{total_value_saved_all_years:.2f}",
         f"{roi:.2f}%" if investment > 0 else "Nenurodyta"
     ]
 }
@@ -138,7 +142,7 @@ st.markdown(
     <div style="text-align: center; margin-top: 2rem;">
         <a href="https://sigitasprendimai.lt/kontaktai-susisiekti/" target="_blank">
             <button style="padding: 0.75em 1.5em; font-size: 1.2em; background-color: #28a745; color: white; border: none; border-radius: 10px; cursor: pointer;">
-                 Susisiekti dabar
+                🚀 Susisiekti dabar
             </button>
         </a>
     </div>
