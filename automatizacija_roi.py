@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 from io import BytesIO
 
 # Puslapio nustatymai
-st.set_page_config(page_title="Automatizacijos naudos skaičiuoklė", page_icon="", layout="centered")
+st.set_page_config(page_title="Automatizacijos naudos skaičiuoklė", page_icon="🚀", layout="centered")
 
 st.title("Sužinokite, kiek laiko ir pinigų galite sutaupyti automatizavę savo verslo procesus!")
 
@@ -75,9 +75,19 @@ else:
 
 # Dinaminė žinutė pagal ROI ir laikotarpį
 if roi >= 0:
-    st.success(f"Puiku! Jūsų automatizacijos projektas per {roi_period_years} metus gali reikšmingai prisidėti prie išlaidų mažinimo ir verslo stiprinimo!")
+    st.success(f"🎯 Puiku! Jūsų automatizacijos projektas per {roi_period_years} metus gali reikšmingai prisidėti prie išlaidų mažinimo ir verslo stiprinimo! 🚀")
 else:
-    st.warning(f"Dėmesio: Per {roi_period_years} metus automatizacijos nauda nepadengia investicijų. Rekomenduojame peržiūrėti įvestus duomenis arba apsvarstyti papildomas optimizacijos galimybes.")
+    st.warning(f"⚡️ Dėmesio: Per {roi_period_years} metus automatizacijos nauda nepadengia investicijų. Rekomenduojame peržiūrėti įvestus duomenis arba apsvarstyti papildomas optimizacijos galimybes.")
+
+# Investicijos grąžos išskaidymas
+if investment > 0:
+    st.markdown("---")
+    st.subheader("Investicijos grąžos (ROI) skaičiavimo detalės:")
+
+    st.write(f"**Bendra sutaupyta suma per {roi_period_years} metus:** {total_value_saved_all_years:.2f} €")
+    st.write(f"**Investuota suma į automatizaciją:** {investment:.2f} €")
+    st.latex(rf"ROI = \frac{{{total_value_saved_all_years:.2f} - {investment:.2f}}}{{{investment:.2f}}} \times 100\%")
+    st.write(f"**Galutinis ROI rezultatas:** {roi:.2f}%")
 
 # Atsisiųsti Excel
 st.header("Atsisiųskite savo skaičiavimą:")
@@ -140,9 +150,9 @@ st.pyplot(fig)
 st.markdown(
     """
     <div style="text-align: center; margin-top: 2rem;">
-        <a href="https://sigitasprendimai.lt/kontaktai-susisiekti/" target="_blank">
+        <a href="https://sigitasprendimai.lt/kontaktai-susisiekti/" target="_blank" rel="noopener">
             <button style="padding: 0.75em 1.5em; font-size: 1.2em; background-color: #28a745; color: white; border: none; border-radius: 10px; cursor: pointer;">
-              Susisiekti dabar
+                🚀 Susisiekti dabar
             </button>
         </a>
     </div>
