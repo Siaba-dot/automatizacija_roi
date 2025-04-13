@@ -1,7 +1,7 @@
 # automatizacija_roi
 Šis projektas yra Streamlit pagrindu sukurta skaičiuoklė, leidžianti įvertinti automatizacijos projektų teikiamą naudą įmonei.
 
-💻 **Pagrindinės funkcijos:**
+ **Pagrindinės funkcijos:**
 - Skaičiuojama, kiek laiko sutaupoma įdiegus automatizaciją.
 - Vertinama darbuotojų laiko sutaupymo finansinė išraiška.
 - Apskaičiuojamas investicijų atsiperkamumas (ROI).
@@ -10,7 +10,7 @@
 
 ---
 
-## 🚀 Kaip paleisti skaičiuoklę?
+##  Kaip paleisti skaičiuoklę?
 
 **1. Atsisiųsk reikiamas bibliotekas:**
 
