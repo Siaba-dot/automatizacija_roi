@@ -72,7 +72,7 @@ total_value_saved_all_years = total_value_saved_per_year * roi_period_years
 if investment > 0:
     roi = ((total_value_saved_all_years - investment) / investment) * 100
 else:
-    roi = 1000  # jei nėra investicijos, laikom labai dideliu ROI
+    roi = 1000
 
 # Rezultatų rodymas
 st.header("Rezultatai:")
@@ -80,6 +80,7 @@ st.header("Rezultatai:")
 st.write(f"**Bendras sutaupytų darbo dienų skaičius per mėnesį:** {total_days_saved_per_month:.2f} dienos")
 st.write(f"**Per mėnesį sutaupoma:** {total_hours_saved_per_month:.2f} valandos / {total_value_saved_per_month:.2f} €")
 st.write(f"**Per metus sutaupoma:** {total_hours_saved_per_year:.2f} valandos / {total_value_saved_per_year:.2f} €")
+st.write(f"**Per {roi_period_years} metus sutaupoma:** {total_value_saved_all_years:.2f} €")
 st.write(f"**Per 3 metus sutaupoma:** {total_value_saved_3_years:.2f} €")
 st.write(f"**Per 5 metus sutaupoma:** {total_value_saved_5_years:.2f} €")
 
@@ -88,13 +89,13 @@ if investment > 0:
 else:
     st.info("Investicijos suma nenurodyta. Visi sutaupyti pinigai – grynasis pelnas!")
 
-# Dinaminė žinutė pagal ROI ir laikotarpį
+# Dinaminė žinutė pagal ROI
 if roi >= 0:
     st.success(f" Puiku! Jūsų automatizacijos projektas per {roi_period_years} metus gali reikšmingai prisidėti prie išlaidų mažinimo ir verslo stiprinimo! ")
 else:
     st.warning(f" Dėmesio: Per {roi_period_years} metus automatizacijos nauda nepadengia investicijų. Rekomenduojame peržiūrėti įvestus duomenis arba apsvarstyti papildomas optimizacijos galimybes.")
 
-# Atsisiųsti Excel su GRAŽIU grafiku
+# Atsisiųsti Excel su grafiku
 st.header("Atsisiųskite savo skaičiavimą:")
 
 def convert_df_to_excel():
@@ -116,27 +117,22 @@ def convert_df_to_excel():
         })
 
         df.to_excel(writer, index=False, sheet_name='Skaičiavimai')
-
         workbook = writer.book
         worksheet = writer.sheets['Skaičiavimai']
 
-        # Sukuriame grafiką
         chart = workbook.add_chart({'type': 'column'})
-
-        # Priskiriame duomenis grafikui
         chart.add_series({
             'name': 'Sutaupytos sumos',
             'categories': ['Skaičiavimai', 1, 0, 4, 0],
             'values': ['Skaičiavimai', 1, 1, 4, 1],
             'fill': {'color': '#1f77b4'}
         })
-
-        chart.set_title({'name': 'Sutaupytos sumos analizė'})
-        chart.set_x_axis({'name': 'Laikotarpis'})
+        chart.set_title({'name': 'Automatizacijos naudos analizė'})
+        chart.set_x_axis({'name': 'Rodiklis'})
         chart.set_y_axis({'name': 'Suma (€)', 'min': 0})
-
         worksheet.insert_chart('D2', chart)
 
+    output.seek(0)
     return output.getvalue()
 
 excel_data = convert_df_to_excel()
@@ -148,18 +144,31 @@ st.download_button(
     mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
 )
 
-# Streamlit grafikas
+# Streamlit grafikas su skaičiukais virš stulpelių
 st.header("Sutaupytų pinigų augimas per metus:")
 
 months = [f"{i} mėn." for i in range(1, 13)]
 monthly_growth = [total_value_saved_per_year * (i / 12) for i in range(1, 13)]
 
 fig, ax = plt.subplots()
-ax.bar(months, monthly_growth)
+bars = ax.bar(months, monthly_growth, color='#1f77b4')
 ax.set_title("Automatizacijos naudos augimas per metus")
 ax.set_xlabel("Mėnuo")
 ax.set_ylabel("Sutaupyta suma (€)")
 plt.xticks(rotation=45)
+
+for bar in bars:
+    height = bar.get_height()
+    ax.annotate(
+        f'{height:.0f} €',
+        xy=(bar.get_x() + bar.get_width() / 2, height),
+        xytext=(0, 5),
+        textcoords="offset points",
+        ha='center',
+        va='bottom',
+        fontsize=8,
+        color='black'
+    )
 
 st.pyplot(fig)
 
@@ -177,8 +186,3 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-
-
-
-
-    
