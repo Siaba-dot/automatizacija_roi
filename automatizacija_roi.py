@@ -12,6 +12,10 @@ st.header("Įveskite duomenis:")
 
 # Įvesties laukai
 num_employees = st.number_input("Kiek darbuotojų naudosis automatizacija?", min_value=1, value=1)
+st.markdown(
+    "ℹ️ **Pastaba:** Pasirinkus daugiau nei vieną darbuotoją, žemiau automatiškai atsiras papildomi laukeliai – "
+    "nepamirškite juos visus užpildyti! 👇"
+)
 
 days_saved_per_employee = []
 hourly_rates = []
